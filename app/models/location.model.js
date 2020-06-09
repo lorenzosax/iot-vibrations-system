@@ -5,7 +5,15 @@ var LocationSchema = mongoose.Schema({
       type: String,
       required: true
   },
-  points: { 'type': {type: String, enum: "Point", default: "Point"}, coordinates: { type: [Number],   default: [0,0]} },
+  points: {
+      type: {
+          type: String,
+          enum: "Point",
+          default: "Point"},
+      coordinates: {
+          type: [Number],
+          default: [0,0]}
+      },
   emotion: {
       type: String,
       enum: ['angry','sad','happy','neutral'],

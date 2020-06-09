@@ -48,7 +48,7 @@ process.on('SIGINT', () => {
 
 // define a simple route
 app.get('/', function(req, res){
-    res.json({"message": "Welcome to EasyNotes application. Take notes quickly. Organize and keep track of all your notes."});
+    res.json({"message": "We ora 4, we are gears... WE ARE 4GEARS ;-)"});
 });
 
 require('./app/routes/note.routes.js')(app);

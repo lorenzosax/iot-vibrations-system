@@ -5,7 +5,7 @@ exports.create = function(req, res) {
     if(!req.body.points) {
         res.status(400).send({message: "location can not be empty"});
     }
-console.log(req.body);
+    console.log(req.body);
     var location = new Location({location_name: req.body.location_name, points: req.body.points, emotion: req.body.emotion});
 
     location.save(function(err, data) {
