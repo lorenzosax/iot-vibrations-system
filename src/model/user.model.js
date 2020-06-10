@@ -22,12 +22,11 @@ const UserSchema = new Schema({
 		type: Boolean,
 		required: true,
 	},
-	createdAt: {type: Date, default: Date.now},
-});
+}, {timestamps: true});
 
-const User = mongoose.model(
+const UserModel = mongoose.model(
 	`${config.get('db.collectionsName.user')}`,
 	UserSchema
 );
 
-export default User;
+export default UserModel;

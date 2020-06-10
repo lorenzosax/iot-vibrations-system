@@ -1,8 +1,8 @@
-import User from '../model/User';
+import UserModel from '../model/user.model';
 import utils from '../utils';
 
 const find = async (user) => {
-	return User.find(user)
+	return UserModel.find(user)
 		.then((res) => {
 			return res;
 		}).catch((err) => err);
@@ -18,14 +18,14 @@ const findByEmail = async (email) => {
 };
 
 const save = async (user) => {
-	const us = new User(user);
+	const us = new UserModel(user);
 	return us.save()
 		.then(() => user)
 		.catch((e) => utils.prepareValidatorsResponse(e.errors));
 };
 
 const updateOne = async (user, valuesToUpdate) => {
-	return User.updateOne(user, valuesToUpdate)
+	return UserModel.updateOne(user, valuesToUpdate)
 		.then(() => {
 			return findByEmail(user.email);
 		})

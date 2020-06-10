@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import config from 'config';
 import bcrypt from 'bcrypt';
 import utils from '../utils';
-import userService from '../service/userService';
+import userService from './user.service';
 /* import mailService from '../service/mailService'; */
 
 const auth = config.get('authentication');

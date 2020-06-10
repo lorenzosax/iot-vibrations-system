@@ -4,8 +4,8 @@ import {validate} from 'express-validation';
 import consts from '../consts';
 import utils from '../utils';
 import validations from './validations';
-import userService from '../service/userService';
-import authService from '../service/authService';
+import userService from '../service/user.service';
+import authService from '../service/auth.service';
 
 const routerPublic = Router();
 const appConfig = config.get('app');

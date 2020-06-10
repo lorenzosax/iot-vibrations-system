@@ -7,7 +7,7 @@ import http from 'http';
 import path from 'path';
 import config from 'config';
 import {routerPrivate, routerPublic} from './routes';
-import dbService from './service/dbService';
+import dbService from './service/db.service';
 
 const app = express();
 

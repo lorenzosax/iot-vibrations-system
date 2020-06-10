@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import utils from '../utils';
-import userDao from '../dao/userDao';
-import mailService from '../service/mailService';
+import userDao from '../dao/user.dao';
+import mailService from './mail.service';
 
 const createUser = (user) => {
 	return userDao.save(user);

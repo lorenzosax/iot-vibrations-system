@@ -1,6 +1,6 @@
 const PORT = process.env.PORT || 3000;
-const DB_USR = process.env.DB_USR || '';
-const DB_PWD = process.env.DB_PWD || '';
+const DB_USR = process.env.DB_USR || 'admin';
+const DB_PWD = process.env.DB_PWD || 'adminpwd';
 
 module.exports = {
 	app: {
@@ -33,7 +33,7 @@ module.exports = {
 			'cluster0-shard-00-01-ntyou.mongodb.net:27017',
 			'cluster0-shard-00-02-ntyou.mongodb.net:27017',
 		],
-		name: 'streams',
+		name: 'mr2020_dev',
 		options: {
 			ssl: true,
 			replicaSet: 'Cluster0-shard-0',

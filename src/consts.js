@@ -10,11 +10,8 @@ export default {
 		RESEND_CONFIRM_EMAIL: '/resend-confirm/:email',
 		// Private
 		CHECK_TOKEN: '/check-token',
-		ACELISTING: '/acelisting',
 	},
-	urls: {
-		acelisting: 'https://acelisting.in/',
-	},
+	urls: {},
 	directory: {
 		template: path.join(__dirname, 'template'),
 	},

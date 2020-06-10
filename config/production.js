@@ -36,7 +36,7 @@ module.exports = {
 			'cluster0-shard-00-01-ntyou.mongodb.net:27017',
 			'cluster0-shard-00-02-ntyou.mongodb.net:27017',
 		],
-		name: 'streams',
+		name: 'mr2020',
 		options: {
 			ssl: true,
 			replicaSet: 'Cluster0-shard-0',

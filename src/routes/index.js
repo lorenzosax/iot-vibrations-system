@@ -1,4 +1,4 @@
-import routerPublic from './publicApi';
-import routerPrivate from './privateApi';
+import routerPublic from './public-api.route';
+import routerPrivate from './private-api.route';
 
 export {routerPublic, routerPrivate};
