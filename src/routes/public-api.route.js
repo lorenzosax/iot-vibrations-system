@@ -6,16 +6,20 @@ import utils from '../utils';
 import validations from './validations';
 import userService from '../service/user.service';
 import authService from '../service/auth.service';
+import sensorService from '../service/sensor.service';
 
 const routerPublic = Router();
 const appConfig = config.get('app');
 
+// region ENTRY POINT
 routerPublic.get(consts.ENDPOINTS.ENTRY, (req, res) => {
 	res.locals.title = 'IoT Sensors Data - Vibration charts';
 	res.locals.version = appConfig.version;
 	res.render('index');
 });
+// endregion
 
+// region AUTHENTICATION
 routerPublic.post(consts.ENDPOINTS.LOGIN,
 	validate(validations.login, {}, {}),
 	async (req, res) => {
@@ -58,5 +62,22 @@ routerPublic.get(consts.ENDPOINTS.RESEND_CONFIRM_EMAIL,
 		res.json(response);
 	}
 );
+// endregion
+
+// region IOT DATA
+routerPublic.get(consts.ENDPOINTS.VIBRATIONS_DATA,
+	async (req, res) => {
+		const response = await sensorService.getAllVibrationsData();
+		res.json(response);
+	}
+);
+routerPublic.post(consts.ENDPOINTS.VIBRATIONS_DATA,
+	validate(validations.vibrationData, {}, {}),
+	async (req, res) => {
+		const response = await sensorService.saveVibrationData(req.body);
+		res.json(response);
+	}
+);
+// endregion
 
 export default routerPublic;

@@ -42,6 +42,7 @@ module.exports = {
 		},
 		collectionsName: {
 			user: 'user',
+			magnetometer: 'magnetometer',
 		},
 	},
 };

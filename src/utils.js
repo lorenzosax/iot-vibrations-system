@@ -89,6 +89,18 @@ const prepareMissingParameters = (next) => {
 	next(err);
 };
 
+const prepareSuccessSentSensorData = (obj) => {
+	return _.merge(prepareOK(),
+		{message: 'Sensor data sent correctly!'},
+		obj);
+};
+
+const prepareErrorSendingSensorData = (obj) => {
+	return _.merge(prepareKO(),
+		{message: 'Error in sending sensor data!'},
+		obj);
+};
+
 export default {
 	cleanStr,
 	randomString,
@@ -103,6 +115,8 @@ export default {
 	prepareErrorTryLaterAgain,
 	prepareSuccessSendEmail,
 	prepareGenericError,
+	prepareSuccessSentSensorData,
+	prepareErrorSendingSensorData,
 	prepareOK,
 	prepareKO,
 };

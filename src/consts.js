@@ -4,10 +4,13 @@ export default {
 	ENDPOINTS: {
 		// Public
 		ENTRY: '/',
+		// Public - Authentication
 		LOGIN: '/login',
 		SIGN_UP: '/signup',
 		CONFIRM_EMAIL: '/confirm/:email/:code',
 		RESEND_CONFIRM_EMAIL: '/resend-confirm/:email',
+		// Public - IOT DATA
+		VIBRATIONS_DATA: '/vibrations',
 		// Private
 		CHECK_TOKEN: '/check-token',
 	},
