@@ -5,22 +5,20 @@ import wsService from '../service/websocket.service';
 const Schema = mongoose.Schema;
 
 const MagnetometerSchema = new Schema({
-	locationName: {
+	location: {
 		type: String,
 		required: true,
 	},
-	points: {
-		type: {
-			type: String,
-			enum: 'Point',
-			default: 'Point',
-		},
-		coordinates: {
-			type: [Number],
-			default: [0, 0, 0],
-		},
+	axes: {
+		type: [Number],
+		default: [0, 0, 0],
 	},
 }, {timestamps: true});
+
+// Legend
+// axes[0] -> x
+// axes[1] -> y
+// axes[2] -> z
 
 MagnetometerSchema.post('save', (data) => {
 	wsService.emit('sensor', data);

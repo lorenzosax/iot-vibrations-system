@@ -67,10 +67,16 @@ routerPublic.get(consts.ENDPOINTS.RESEND_CONFIRM_EMAIL,
 // region IOT DATA
 routerPublic.get(consts.ENDPOINTS.VIBRATIONS_DATA,
 	async (req, res) => {
-		const response = await sensorService.getAllVibrationsData();
+		let response;
+		if (!isNaN(req.query.last)) {
+			response = await sensorService.getLastXVibrationsData(req.query.last);
+		} else {
+			response = await sensorService.getAllVibrationsData();
+		}
 		res.json(response);
 	}
 );
+
 routerPublic.post(consts.ENDPOINTS.VIBRATIONS_DATA,
 	validate(validations.vibrationData, {}, {}),
 	async (req, res) => {

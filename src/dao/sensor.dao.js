@@ -1,8 +1,11 @@
 import utils from '../utils';
 import MagnetometerModel from '../model/magnetometer.model';
 
-const findAllMagnetometerData = async (user) => {
-	return MagnetometerModel.find()
+const findMagnetometerData = async (options, sort, limit) => {
+	const lim = limit < 200 ? limit : 200;
+	const opts = options || {};
+	const sorting = sort || {};
+	return MagnetometerModel.find(opts).sort(sorting).limit(lim)
 		.then((res) => {
 			return res;
 		}).catch((err) => err);
@@ -17,6 +20,6 @@ const saveMagnetometerData = async (magnetometerData) => {
 };
 
 export default {
-	findAllMagnetometerData,
+	findMagnetometerData,
 	saveMagnetometerData,
 };
