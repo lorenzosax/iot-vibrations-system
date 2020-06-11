@@ -1,5 +1,6 @@
 import sensorDao from '../dao/sensor.dao';
 import utils from '../utils';
+import _ from 'underscore';
 
 const getAllVibrationsData = async () => {
 	let vibrationData = await sensorDao.findMagnetometerData();
@@ -15,7 +16,7 @@ const getLastXVibrationsData = async (numOfElToTake) => {
 			const limit = parseInt(numOfElToTake);
 			let vibrationData = await sensorDao
 				.findMagnetometerData({}, sort, limit);
-			resolve(vibrationData);
+			resolve(_.sortBy(vibrationData, 'createdAt'));
 		} catch (e) {
 			reject();
 		}
