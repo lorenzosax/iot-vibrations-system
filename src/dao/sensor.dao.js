@@ -1,4 +1,4 @@
-// import utils from '../utils';
+import utils from '../utils';
 import MagnetometerModel from '../model/magnetometer.model';
 
 const findAllMagnetometerData = async (user) => {

@@ -3,10 +3,16 @@
     <title><%= title %></title>
     <link rel="shortcut icon" href="/static/images/favicon.ico" type="image/x-icon">
     <link rel="icon" href="/static/images/favicon.ico" type="image/x-icon">
+    <link href="/static/styles/apexcharts.css" rel="stylesheet" />
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.dev.js" integrity="sha256-OgiHfllOBEOiWQ2OcBsDncRG2k7QBW9Rs1dB7MH2N2s=" crossorigin="anonymous"></script>
+    <script src="/static/js/jquery-3.5.1.min.js"></script>
+    <script src="/static/js/apexcharts.min.js"></script>
+    <script src="/static/js/sensor-charts.js"></script>
 </head>
 <body>
     <div style="text-align: center;">
-        <h1>IoT Sensors Data - Vibration charts</h1>
+        <h1>IoT data collector</h1>
         <table align=center>
             <tbody>
                 <tr>
@@ -20,6 +26,7 @@
 
             </tbody>
         </table>
+        <div id="vibration-chart"></div>
     </div>
 </body>
 </html>

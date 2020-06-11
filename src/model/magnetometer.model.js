@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 import config from 'config';
+import wsService from '../service/websocket.service';
 
 const Schema = mongoose.Schema;
 
@@ -20,6 +21,10 @@ const MagnetometerSchema = new Schema({
 		},
 	},
 }, {timestamps: true});
+
+MagnetometerSchema.post('save', (data) => {
+	wsService.emit('sensor', data);
+});
 
 const MagnetometerModel = mongoose.model(
 	`${config.get('db.collectionsName.magnetometer')}`,

@@ -41,7 +41,8 @@
     "randomstring": "^1.1.5",
     "request": "^2.88.0",
     "request-promise": "^4.2.2",
-    "rimraf": "^2.6.2"
+    "rimraf": "^2.6.2",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.0.1",

@@ -8,6 +8,7 @@ import path from 'path';
 import config from 'config';
 import {routerPrivate, routerPublic} from './routes';
 import dbService from './service/db.service';
+import wsService from './service/websocket.service';
 
 const app = express();
 
@@ -40,7 +41,7 @@ app.use((err, req, res, next) => {
 		return res.status(err.statusCode).json(err);
 	}
 	let errStatus = err.status || 500;
-	req.app.get('env') === 'development' ? console.log(err.details.body) : null;
+	req.app.get('env') === 'development' ? console.log(err) : null;
 	res.status(errStatus);
 	res.json(err);
 });
@@ -48,7 +49,8 @@ app.use((err, req, res, next) => {
 // region Create Server
 const server = http.createServer(app);
 const port = app.get('port');
-dbService.run().then(() => {
+dbService.run().then( async () => {
+	await wsService.start(server);
 	server.listen(port, () => {
 		console.log(`Application listening on ${config.get('app.baseUrl')}`);
 		console.log(`Environment => ${config.util.getEnv('NODE_ENV')}`);
