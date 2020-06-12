@@ -23,7 +23,7 @@ function prepopulateVibrationChart(count, data) {
 	if (!data || data.length === 0) return;
 	let i = 0;
 	let now = Date.now();
-	while (i < count && data.length > count) {
+	while (i < count && i < data.length) {
 		let x = new Date(data[i].createdAt).getTime();
 		if (now - x <= XAXISRANGE) {
 			dataX.push({x, y:data[i].axes[0]});
