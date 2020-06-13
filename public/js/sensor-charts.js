@@ -1,7 +1,6 @@
 let dataX = [];
 let dataY = [];
 let dataZ = [];
-let DAYRANGE = 86400000;
 let XAXISRANGE = 3600000; // 60 min
 
 let vibrationChart;
@@ -19,51 +18,46 @@ function calculateCorrectMaxAndMinYaxis() {
 	vibrationChart.opts.yaxis[0].max = _.max(max);
 }
 
-function prepopulateVibrationChart(count, data) {
+function prepopulateVibrationChart(data) {
 	if (!data || data.length === 0) return;
-	let i = 0;
 	let now = Date.now();
-	while (i < count && i < data.length) {
-		let x = new Date(data[i].createdAt).getTime();
-		if (now - x <= XAXISRANGE) {
-			dataX.push({x, y:data[i].axes[0]});
-			dataY.push({x, y:data[i].axes[1]});
-			dataZ.push({x, y:data[i].axes[2]});
+	for (let i = 0; i < data.length - 1; i++) {
+		let date_i = new Date(data[i].createdAt).getTime();
+		let date_i_1 = new Date(data[i+1].createdAt).getTime();
+		if (now - date_i <= XAXISRANGE || now - date_i_1 <= XAXISRANGE) {
+			dataX.push({x: date_i, y: data[i].axes[0]});
+			dataY.push({x: date_i, y: data[i].axes[1]});
+			dataZ.push({x: date_i, y: data[i].axes[2]});
 		}
-		i++;
+	}
+	let lastPosition = data.length - 1;
+	let date = new Date(data[lastPosition].createdAt).getTime();
+	if (now - date <= XAXISRANGE) {
+		dataX.push({x: date, y:data[lastPosition].axes[0]});
+		dataY.push({x: date, y:data[lastPosition].axes[1]});
+		dataZ.push({x: date, y:data[lastPosition].axes[2]});
 	}
 	calculateCorrectMaxAndMinYaxis();
 }
 
 function putNewVibrationData(data) {
-	/*
 	let now = Date.now();
-	for (let i = 0; i < dataX.length; i++) {
+	for (let i = 0; i < dataX.length - 1; i++) {
 		// IMPORTANT
 		// remove data which is out of drawing area
 		// to prevent memory leaks
-		if (now - dataX[i].x > XAXISRANGE) {
+		if (now - dataX[i].x > XAXISRANGE &&
+					now - dataX[i + 1].x > XAXISRANGE) {
 			dataX.shift();
 			dataY.shift();
 			dataZ.shift();
-		} else {
-			break;
-		}
+		} else break;
 	}
-	*/
 
-	dataX.push({
-		x: new Date(data.createdAt).getTime(),
-		y: data.axes[0],
-	});
-	dataY.push({
-		x: new Date(data.createdAt).getTime(),
-		y: data.axes[1],
-	});
-	dataZ.push({
-		x: new Date(data.createdAt).getTime(),
-		y: data.axes[2],
-	});
+	let x = new Date(data.createdAt).getTime();
+	dataX.push({x, y: data.axes[0]});
+	dataY.push({x, y: data.axes[1]});
+	dataZ.push({x, y: data.axes[2]});
 	calculateCorrectMaxAndMinYaxis();
 }
 
@@ -138,22 +132,13 @@ $(document).ready(function() {
 	$.ajax({
 		url: '/vibrations?last='+numInitialData,
 		success: function(data) {
-			prepopulateVibrationChart(
-				numInitialData,
-				data);
+			prepopulateVibrationChart(data);
 			vibrationChart.render();
 			let socket = io();
 			socket.on('sensor', function(data) {
 				putNewVibrationData(data);
-				vibrationChart.updateSeries([{
-					data: dataX,
-				},
-				{
-					data: dataY,
-				},
-				{
-					data: dataZ,
-				}]);
+				vibrationChart
+					.updateSeries([{data: dataX}, {data: dataY}, {data: dataZ,}]);
 			});
 		},
 	});
