@@ -17,6 +17,11 @@ routerPublic.get(consts.ENDPOINTS.ENTRY, (req, res) => {
 	res.locals.version = appConfig.version;
 	res.render('index');
 });
+routerPublic.get(consts.ENDPOINTS.PROBE,
+	(req, res) => {
+		res.send('Probe - server status: UP');
+	}
+);
 // endregion
 
 // region AUTHENTICATION

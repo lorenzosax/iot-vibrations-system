@@ -4,6 +4,7 @@ export default {
 	ENDPOINTS: {
 		// Public
 		ENTRY: '/',
+		PROBE: '/probe',
 		// Public - Authentication
 		LOGIN: '/login',
 		SIGN_UP: '/signup',
