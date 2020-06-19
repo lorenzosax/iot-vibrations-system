@@ -7,6 +7,7 @@ import validations from './validations';
 import userService from '../service/user.service';
 import authService from '../service/auth.service';
 import sensorService from '../service/sensor.service';
+import logService from '../service/log.service';
 
 const routerPublic = Router();
 const appConfig = config.get('app');
@@ -85,6 +86,7 @@ routerPublic.get(consts.ENDPOINTS.VIBRATIONS_DATA,
 routerPublic.post(consts.ENDPOINTS.VIBRATIONS_DATA,
 	// validate(validations.vibrationData, {}, {}),
 	async (req, res) => {
+		logService.saveLog(req.body);
 		const response = await sensorService.saveVibrationData(req.body);
 		res.json(response);
 	}
