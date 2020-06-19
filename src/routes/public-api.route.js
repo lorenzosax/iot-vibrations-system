@@ -89,6 +89,12 @@ routerPublic.post(consts.ENDPOINTS.VIBRATIONS_DATA,
 		res.json(response);
 	}
 );
+
+routerPublic.post('/test',
+	(req, res) => {
+		res.send('Post OK');
+	}
+);
 // endregion
 
 export default routerPublic;
