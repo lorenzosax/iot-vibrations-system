@@ -6,8 +6,7 @@ const Schema = mongoose.Schema;
 
 const MagnetometerSchema = new Schema({
 	location: {
-		type: String,
-		required: true,
+		type: String
 	},
 	axes: {
 		type: [Number],
