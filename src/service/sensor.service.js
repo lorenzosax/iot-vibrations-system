@@ -35,8 +35,21 @@ const saveVibrationData = async (vibrationData) => {
 	return response;
 };
 
+const save3axesVibrationData = async (location, x, y, z) => {
+	let response;
+	const savedVibrationData = await sensorDao
+		.save3axesMagnetometerData(location, x, y, z);
+	if (savedVibrationData.status !== utils.prepareKO().status) {
+		response = utils.prepareSuccessSentSensorData();
+	} else {
+		response = utils.prepareErrorSendingSensorData(savedVibrationData);
+	}
+	return response;
+};
+
 export default {
 	getAllVibrationsData,
 	getLastXVibrationsData,
 	saveVibrationData,
+	save3axesVibrationData,
 };

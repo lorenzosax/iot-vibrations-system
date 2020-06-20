@@ -10,6 +10,9 @@ const LogSchema = new Schema({
 	headers: {
 		type: Object,
 	},
+	query: {
+		type: Object,
+	},
 }, {timestamps: true});
 
 const LogModel = mongoose.model(

@@ -19,7 +19,19 @@ const saveMagnetometerData = async (magnetometerData) => {
 		.catch((e) => utils.prepareValidatorsResponse(e.errors));
 };
 
+const save3axesMagnetometerData = async (location, x, y, z) => {
+	let obj = {
+		location: location,
+		axes: [x, y, z],
+	};
+	const magData = new MagnetometerModel(obj);
+	return magData.save()
+		.then(() => magData)
+		.catch((e) => utils.prepareValidatorsResponse(e.errors));
+};
+
 export default {
 	findMagnetometerData,
 	saveMagnetometerData,
+	save3axesMagnetometerData,
 };

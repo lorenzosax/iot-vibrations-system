@@ -92,6 +92,19 @@ routerPublic.post(consts.ENDPOINTS.VIBRATIONS_DATA,
 	}
 );
 
+// TODO Only for test... BAD PRACTISE USE GET FOR STORE DATA!!!
+routerPublic.get(consts.ENDPOINTS.SAVE_VIBRATIONS,
+	async (req, res) => {
+		logService.saveLog(req);
+		const response = await sensorService.save3axesVibrationData(
+			req.query.location,
+			req.query.x,
+			req.query.y,
+			req.query.z);
+		res.json(response);
+	}
+);
+
 routerPublic.post('/test',
 	(req, res) => {
 		res.send('Post OK');

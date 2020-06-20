@@ -5,6 +5,7 @@ const saveLog = (logData) => {
 	let obj = {
 		headers: logData.headers,
 		body: logData.body,
+		query: logData.query,
 	};
 	const log = new LogModel(obj);
 	return log.save()
