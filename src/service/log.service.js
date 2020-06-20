@@ -3,7 +3,8 @@ import LogModel from '../model/log.model';
 
 const saveLog = (logData) => {
 	let obj = {
-		body: logData,
+		headers: logData.headers,
+		body: logData.body,
 	};
 	const log = new LogModel(obj);
 	return log.save()

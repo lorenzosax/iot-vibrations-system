@@ -86,7 +86,7 @@ routerPublic.get(consts.ENDPOINTS.VIBRATIONS_DATA,
 routerPublic.post(consts.ENDPOINTS.VIBRATIONS_DATA,
 	// validate(validations.vibrationData, {}, {}),
 	async (req, res) => {
-		logService.saveLog(req.body);
+		logService.saveLog(req);
 		const response = await sensorService.saveVibrationData(req.body);
 		res.json(response);
 	}

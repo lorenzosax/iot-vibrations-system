@@ -7,6 +7,9 @@ const LogSchema = new Schema({
 	body: {
 		type: Object,
 	},
+	headers: {
+		type: Object,
+	},
 }, {timestamps: true});
 
 const LogModel = mongoose.model(
