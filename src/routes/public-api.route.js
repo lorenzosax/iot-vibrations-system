@@ -104,12 +104,6 @@ routerPublic.get(consts.ENDPOINTS.SAVE_VIBRATIONS,
 		res.json(response);
 	}
 );
-
-routerPublic.post('/test',
-	(req, res) => {
-		res.send('Post OK');
-	}
-);
 // endregion
 
 export default routerPublic;

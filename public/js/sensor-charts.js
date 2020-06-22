@@ -1,7 +1,7 @@
 let dataX = [];
 let dataY = [];
 let dataZ = [];
-let XAXISRANGE = 3600000; // 60 min
+let XAXISRANGE = 60000; // 1 min
 
 let vibrationChart;
 
@@ -128,7 +128,7 @@ $(document).ready(function() {
 	vibrationChart =
 		new ApexCharts(document.querySelector('#vibration-chart'), options);
 
-	let numInitialData = 30;
+	let numInitialData = 60;
 	$.ajax({
 		url: '/vibrations?last='+numInitialData,
 		success: function(data) {
