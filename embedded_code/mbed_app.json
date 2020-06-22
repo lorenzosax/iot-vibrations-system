@@ -1,0 +1,20 @@
+{
+    "config": {
+        "wifi-ssid": {
+            "help": "WiFi SSID",
+            "value": "\"LabPoli\""
+        },
+        "wifi-password": {
+            "help": "WiFi Password",
+            "value": "\"\""
+        },
+        "wifi-tx": {
+            "help": "TX pin for serial connection to external device",
+            "value": "PA_9"
+        },
+        "wifi-rx": {
+            "help": "RX pin for serial connection to external device",
+            "value": "PA_10"
+        }
+    }
+}
