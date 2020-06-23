@@ -1,145 +1,94 @@
-let dataX = [];
-let dataY = [];
-let dataZ = [];
-let XAXISRANGE = 60000; // 1 min
+let myLineChart;
+let lineChartData = {
+	labels: [],
+	datasets: [{
+		label: 'x',
+		borderColor: window.chartColors.red,
+		backgroundColor: window.chartColors.red,
+		fill: false,
+		data: [],
+		yAxisID: 'y-axis-1',
+	}, {
+		label: 'y',
+		borderColor: window.chartColors.blue,
+		backgroundColor: window.chartColors.blue,
+		fill: false,
+		data: [],
+		yAxisID: 'y-axis-1'
+	}, {
+		label: 'z',
+		borderColor: window.chartColors.yellow,
+		backgroundColor: window.chartColors.yellow,
+		fill: false,
+		data: [],
+		yAxisID: 'y-axis-1'
+	}]
+};
 
-let vibrationChart;
-
-function calculateCorrectMaxAndMinYaxis() {
-	let min = [];
-	let max = [];
-	min.push((_.min(dataX, function(o) {return o.y;})).y);
-	min.push((_.min(dataY, function(o) {return o.y;})).y);
-	min.push((_.min(dataZ, function(o) {return o.y;})).y);
-	max.push((_.max(dataX, function(o) {return o.y;})).y);
-	max.push((_.max(dataY, function(o) {return o.y;})).y);
-	max.push((_.max(dataZ, function(o) {return o.y;})).y);
-	vibrationChart.opts.yaxis[0].min = _.min(min);
-	vibrationChart.opts.yaxis[0].max = _.max(max);
+function stringToFormattedDate(dateString) {
+	return new Date(dateString).toISOString()
+		.replace(/T/, ' ')
+		.replace(/\..+/, '');
 }
 
-function prepopulateVibrationChart(data) {
-	if (!data || data.length === 0) return;
-	let now = Date.now();
-	for (let i = 0; i < data.length - 1; i++) {
-		let date_i = new Date(data[i].createdAt).getTime();
-		let date_i_1 = new Date(data[i+1].createdAt).getTime();
-		if (now - date_i <= XAXISRANGE || now - date_i_1 <= XAXISRANGE) {
-			dataX.push({x: date_i, y: data[i].axes[0]});
-			dataY.push({x: date_i, y: data[i].axes[1]});
-			dataZ.push({x: date_i, y: data[i].axes[2]});
+function initDataForChart(data) {
+	for (let i = 0; i < data.length; i++) {
+		lineChartData.datasets[0].data.push(data[i].axes[0]);
+		lineChartData.datasets[1].data.push(data[i].axes[1]);
+		lineChartData.datasets[2].data.push(data[i].axes[2]);
+		lineChartData.labels.push(stringToFormattedDate(data[i].createdAt));
+	}
+}
+
+function createChart() {
+	let ctx = document.getElementById('canvas').getContext('2d');
+	myLineChart = Chart.Line(ctx, {
+		data: lineChartData,
+		options: {
+			responsive: true,
+			hoverMode: 'index',
+			stacked: false,
+			title: {
+				display: true,
+				text: 'Vibration chart'
+			},
+			scales: {
+				yAxes: [{
+					type: 'linear',
+					display: true,
+					position: 'left',
+					id: 'y-axis-1',
+				}],
+			}
 		}
-	}
-	let lastPosition = data.length - 1;
-	let date = new Date(data[lastPosition].createdAt).getTime();
-	if (now - date <= XAXISRANGE) {
-		dataX.push({x: date, y:data[lastPosition].axes[0]});
-		dataY.push({x: date, y:data[lastPosition].axes[1]});
-		dataZ.push({x: date, y:data[lastPosition].axes[2]});
-	}
-	calculateCorrectMaxAndMinYaxis();
+	});
 }
 
-function putNewVibrationData(data) {
-	let now = Date.now();
-	for (let i = 0; i < dataX.length - 1; i++) {
-		// IMPORTANT
-		// remove data which is out of drawing area
-		// to prevent memory leaks
-		if (now - dataX[i].x > XAXISRANGE &&
-					now - dataX[i + 1].x > XAXISRANGE) {
-			dataX.shift();
-			dataY.shift();
-			dataZ.shift();
-		} else break;
-	}
-
-	let x = new Date(data.createdAt).getTime();
-	dataX.push({x, y: data.axes[0]});
-	dataY.push({x, y: data.axes[1]});
-	dataZ.push({x, y: data.axes[2]});
-	calculateCorrectMaxAndMinYaxis();
+function openSocket(callback) {
+	let socket = io();
+	socket.on('sensor', function(data) {
+		callback(data);
+	});
 }
 
-/*
-function resetData() {
-	// Alternatively, you can also reset the data at certain
-	// intervals to prevent creating a huge series
-	dataX = dataX.slice(dataX.length - 10, dataX.length);
+function callbackOnGetData(data) {
+	lineChartData.labels.push(stringToFormattedDate(data.createdAt));
+	lineChartData.labels.shift();
+	lineChartData.datasets.forEach(function(dataset, index) {
+		dataset.data.push(data.axes[index]);
+		dataset.data.shift();
+	});
+	myLineChart.update();
 }
-*/
 
 $(document).ready(function() {
-	let options = {
-		series: [{
-			data: dataX,
-		},
-		{
-			data: dataY,
-		},
-		{
-			data: dataZ,
-		}],
-		chart: {
-			id: 'realtime',
-			height: 350,
-			width: '50%',
-			type: 'line',
-			animations: {
-				enabled: true,
-				easing: 'linear',
-				dynamicAnimation: {
-					speed: 1000,
-				},
-			},
-			toolbar: {
-				show: false,
-			},
-			zoom: {
-				enabled: false,
-			},
-		},
-		dataLabels: {
-			enabled: false,
-		},
-		stroke: {
-			curve: 'smooth',
-		},
-		title: {
-			text: 'Vibration chart',
-			align: 'left',
-		},
-		markers: {
-			size: 0,
-		},
-		xaxis: {
-			type: 'datetime',
-			range: XAXISRANGE,
-		},
-		yaxis: {
-			max: 100,
-			min: 0,
-		},
-		legend: {
-			show: false,
-		},
-	};
-
-	vibrationChart =
-		new ApexCharts(document.querySelector('#vibration-chart'), options);
-
-	let numInitialData = 60;
+	let numInitialData = 10;
 	$.ajax({
 		url: '/vibrations?last='+numInitialData,
 		success: function(data) {
-			prepopulateVibrationChart(data);
-			vibrationChart.render();
-			let socket = io();
-			socket.on('sensor', function(data) {
-				putNewVibrationData(data);
-				vibrationChart
-					.updateSeries([{data: dataX}, {data: dataY}, {data: dataZ,}]);
-			});
+			initDataForChart(data);
+			createChart();
+			openSocket(callbackOnGetData);
 		},
 	});
 });
