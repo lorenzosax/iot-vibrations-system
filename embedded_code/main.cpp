@@ -40,6 +40,14 @@ static XNucleoIKS01A2 *mems_expansion_board = XNucleoIKS01A2::instance(D14, D15,
 
 static LSM6DSLSensor *acc_gyro = mems_expansion_board->acc_gyro;
 
+bool flag = false;
+Ticker t;
+
+void enableMeasure()
+{
+	flag = true;
+}
+
 const char *sec2str(nsapi_security_t sec)
 {
     switch (sec) {
@@ -189,10 +197,11 @@ void http_send_data(NetworkInterface *net)
     socket.close();
 }
 
-void http_post_send_vibration(NetworkInterface *net, int32_t* axes){
+void http_post_send_vibration(NetworkInterface *net, int32_t* axes)
+{
     TCPSocket socket;
 
-    printf("Sending HTTP POST request to 10.252.40.156/vibrations...\r\n");
+    printf("Sending HTTP POST request to 10.252.40.156/vibration...\r\n");
 
     // Open a socket on the network interface, and create a TCP connection
     socket.open(net);
@@ -202,31 +211,27 @@ void http_post_send_vibration(NetworkInterface *net, int32_t* axes){
 		string x = to_string(axes[0]);
 		string y = to_string(axes[1]);
 		string z = to_string(axes[2]);
-   
-		//char body[] = "{\"location\": \"LabPoliPOST\"}";
-		
+ 
 		char *body = (char*) malloc(150*sizeof(char));
 		
-		strcat(body, "{\"location\": \"LabPoliPOST\",");
-		strcat(body, " \"axes\": [");
-		strcat(body, x.c_str());
+		strcat(body, "{\"location\": \"LabPoli\",");
+		strcat(body, " \"axes\": [[");
+		strcat(body, x.c_str()); 
 		strcat(body, ",");
-		strcat(body, y.c_str());
+		strcat(body, y.c_str()); 
 		strcat(body, ",");
-		strcat(body, z.c_str());
-		strcat(body, "]");
-		strcat(body, "}");
-		
+		strcat(body, z.c_str()); 
+		strcat(body, "]]}");
+	
 		body = (char *) realloc(body, (strlen(body)+1)*sizeof(char));
-		// Send a simple http request
-		char sbuffer[300] = "POST /vibrations HTTP/1.1\r\nHost: 10.252.40.156\r\nContent-Type: application/json\r\nContent-Length: ";
-		//char sbuffer[300] = "POST /vibrations HTTP/1.1\r\nHost: misure2020.herokuapp.com\r\nContent-Type: application/json\r\nContent-Length: ";
+		
+		char sbuffer[300] = "POST /vibration HTTP/1.1\r\nHost: 10.252.40.156\r\nContent-Type: application/json\r\nContent-Length: ";
+		//char sbuffer[300] = "POST /vibration HTTP/1.1\r\nHost: misure2020.herokuapp.com\r\nContent-Type: application/json\r\nContent-Length: ";
 		
 		strcat(sbuffer, to_string(strlen(body)+1).c_str());
 		strcat(sbuffer, "\r\n\r\n");
 		strcat(sbuffer, body);
-		strcat(sbuffer, "\r\n\r\n");
-				
+		strcat(sbuffer, "\r\n\r\n");	
 		
 		//strcat(sbuffer, "POST /vibrations HTTP/1.1\r\nHost: misure2020.herokuapp.com\r\nContent-Type: application/json\r\n\r\n");
 		//strcat(sbuffer, "POST /vibrations HTTP/1.1\r\nHost: misure2020.herokuapp.com\r\nCache-Control: no-cache\r\nContent-Type: application/x-www-form-urlencoded\r\n\r\nX=Raf"); 
@@ -235,7 +240,6 @@ void http_post_send_vibration(NetworkInterface *net, int32_t* axes){
 		printf("Richiesta: %s", sbuffer);
 	
     // Send a simple http request
-		//char sbuffer[] = "POST /vibrations HTTP/1.1\r\nHost: misure2020.herokuapp.com\r\nContent-Type: application/json\r\n\r\n{\n\"location\": \"LabPoliTESTs\", \n\t\"axes\": [20, 60, 50]\n}\r\n";
     int scount = socket.send(sbuffer, sizeof sbuffer);
     printf("sent %d [%.*s]\r\n", scount, strstr(sbuffer, "\r\n")-sbuffer, sbuffer);
 
@@ -247,8 +251,58 @@ void http_post_send_vibration(NetworkInterface *net, int32_t* axes){
     // Close the socket to return its memory and bring down the network interface
     socket.close();
 }
+void http_post_send_vibrations(NetworkInterface *net, int32_t axes[][3])
+{
+    TCPSocket socket;
 
-void http_get_send_vibration(NetworkInterface *net, int32_t* axes){
+    printf("Sending HTTP POST request to misure2020.herokuapp.com/vibration...\r\n");
+
+    // Open a socket on the network interface, and create a TCP connection
+    socket.open(net);
+		//socket.connect("misure2020.herokuapp.com", 80);
+		socket.connect("10.252.40.156", 3000);
+		char *body = (char*) malloc(1000*sizeof(char));
+	
+		strcat(body, "{\"location\": \"LabPoli\",");
+		strcat(body, " \"axes\": [");
+		for(int i = 0; i < 50; i++) {
+			string x = to_string(axes[i][0]);
+			string y = to_string(axes[i][1]);
+			string z = to_string(axes[i][2]);
+			strcat(body, "[");
+			strcat(body, x.c_str()); 
+			strcat(body, ",");
+			strcat(body, y.c_str()); 
+			strcat(body, ",");
+			strcat(body, z.c_str()); 
+			strcat(body, "]");
+			if(i!=49) strcat(body, ",");
+		}
+		strcat(body, "]}");		
+		body = (char *) realloc(body, (strlen(body)+1)*sizeof(char));
+
+		char sbuffer[1200] = "POST /vibration HTTP/1.1\r\nHost: 10.252.40.156\r\nContent-Type: application/json\r\nContent-Length: ";
+		
+		strcat(sbuffer, to_string(strlen(body)+1).c_str());
+		strcat(sbuffer, "\r\n\r\n");
+		strcat(sbuffer, body);
+		strcat(sbuffer, "\r\n\r\n");
+		
+    // Send a simple http request
+    int scount = socket.send(sbuffer, sizeof sbuffer);
+    printf("sent %d [%.*s]\r\n", scount, strstr(sbuffer, "\r\n")-sbuffer, sbuffer);
+
+    // Recieve a simple http response and print out the response line
+    /*char rbuffer[100];
+    int rcount = socket.recv(rbuffer, sizeof rbuffer);
+    printf("recv %d [%s]\r\n", rcount, rbuffer);*/
+
+    // Close the socket to return its memory and bring down the network interface
+    socket.close();
+}
+
+void http_get_send_vibration(NetworkInterface *net, int32_t* axes)
+{
     TCPSocket socket;
 
     printf("Sending HTTP GET request to 10.252.40.156/savevibrations...\r\n");
@@ -303,7 +357,8 @@ void http_get_send_vibration(NetworkInterface *net, int32_t* axes){
     socket.close();
 }
 
-void banner() {
+void banner()
+	{
 	printf("\r\n\r\n");
 	printf("###################################\r\n");
 	printf("##  (NEW) IoT Node: Vibration    ##\r\n");
@@ -312,13 +367,11 @@ void banner() {
 
 int main()
 {
-		banner();
-		int32_t x_axes[3];
-		float x_sens[3];
+		int32_t group[50][3];
 	
-		int32_t g_axes[3];
-		float g_sens[3];
-
+		banner();
+	
+		t.attach(&enableMeasure, 0.001);
 		
     scan(&wifi);
 
@@ -336,7 +389,9 @@ int main()
 			}
 		}*/
 		
-		int ret = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_NONE);
+		int ret = wifi.connect( MBED_CONF_APP_WIFI_SSID, 
+														MBED_CONF_APP_WIFI_PASSWORD, 
+														NSAPI_SECURITY_NONE);
 		if (ret != 0) {
 			printf("\r\nConnection error!\r\n");
 			return -1;
@@ -354,46 +409,33 @@ int main()
 		// Enable High Pass mode: LSM6DSL_ACC_GYRO_HP_SLOPE_XL_EN -> 1
 		acc_gyro->write_reg(LSM6DSL_ACC_GYRO_HP_SLOPE_XL_EN, 1);
 		
-		acc_gyro->write_reg(LSM303AGR_ACC_HPCF_11, 1);
-
-		
-		float *xodr, *godr;
+		acc_gyro->set_x_odr(100);
 		
 		acc_gyro->enable_x();
-		acc_gyro->enable_g();
+
+		float odr;
+		acc_gyro->get_x_odr(&odr);
 		
-		//acc_gyro->set_x_odr();
-		//acc_gyro->set_g_odr();
+		printf("Output data rate: %f\r\n", odr);
 		
-		/*acc_gyro->get_x_odr(xodr);		
-		acc_gyro->get_g_odr(godr);
-		
-		printf("odr accelerometer: %f\r\n", xodr);
-		printf("odr gyroscope: %f\r\n", godr);
-		*/
-		
-		while(1){
-			acc_gyro->get_x_axes(x_axes);
-			acc_gyro->get_x_sensitivity(g_sens);
-			
-			acc_gyro->get_g_axes(g_axes);
-			acc_gyro->get_g_sensitivity(g_sens);
-			
-			
-			printf("LSM6DSL [acc/mg]:      %d, %d, %d\r\n", x_axes[0], x_axes[1], x_axes[2]);
-			printf("Sensitivity accelerometer:      %f, %f, %f\r\n", x_sens[0], x_sens[1], x_sens[2]);
-			
-			printf("LSM6DSL [gyro/mdps]:      %d, %d, %d\r\n", x_axes[0], x_axes[1], x_axes[2]);
-			printf("Sensitivity gyroscope:      %f, %f, %f\r\n", x_sens[0], x_sens[1], x_sens[2]);
-			
-			//http_demo1(&wifi, x_axes);
-			http_post_send_vibration(&wifi, x_axes);
-			
-			//http_get_send_vibration(&wifi, x_axes);
-			
-			thread_sleep_for(2000);
+		int i = 0;
+
+		while(1) {
+			if (flag) {
+				
+				acc_gyro->get_x_axes(group[i]);
+				
+				//printf("LSM6DSL [acc/mg]:      %d, %d, %d [%d]\r\n", group[i][0], group[i][1], group[i][2], i);
+				i++;
+				
+				if(i >= 50) {
+					http_post_send_vibrations(&wifi, group);
+					i = 0;
+				}
+				flag = false;
+			}
 		}
-	
+
     wifi.disconnect();
 
     printf("\r\nDone\r\n");
