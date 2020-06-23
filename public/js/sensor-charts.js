@@ -82,7 +82,7 @@ function callbackOnGetData(data) {
 }
 
 $(document).ready(function() {
-	let numInitialData = 10;
+	let numInitialData = 200;
 	$.ajax({
 		url: '/vibration?last='+numInitialData,
 		success: function(data) {
