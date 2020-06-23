@@ -50,7 +50,8 @@ function createChart() {
 			stacked: false,
 			title: {
 				display: true,
-				text: 'Vibration chart'
+				text: 'Vibration chart',
+				fontSize: 20,
 			},
 			scales: {
 				yAxes: [{
@@ -58,6 +59,20 @@ function createChart() {
 					display: true,
 					position: 'left',
 					id: 'y-axis-1',
+					scaleLabel: {
+						display: true,
+						labelString: 'Acceleration (mg)',
+						fontSize: 18,
+					}
+				}],
+				xAxes: [{
+					display: true,
+					id: 'x-axis-1',
+					scaleLabel: {
+						display: true,
+						labelString: 'Time',
+						fontSize: 18,
+					}
 				}],
 			}
 		}
