@@ -71,7 +71,7 @@ routerPublic.get(consts.ENDPOINTS.RESEND_CONFIRM_EMAIL,
 // endregion
 
 // region IOT DATA
-routerPublic.get(consts.ENDPOINTS.VIBRATIONS_DATA,
+routerPublic.get(consts.ENDPOINTS.VIBRATION_DATA,
 	async (req, res) => {
 		let response;
 		if (!isNaN(req.query.last)) {
@@ -83,10 +83,9 @@ routerPublic.get(consts.ENDPOINTS.VIBRATIONS_DATA,
 	}
 );
 
-routerPublic.post(consts.ENDPOINTS.VIBRATIONS_DATA,
+routerPublic.post(consts.ENDPOINTS.VIBRATION_DATA,
 	// validate(validations.vibrationData, {}, {}),
 	async (req, res) => {
-		logService.saveLog(req);
 		const response = await sensorService.saveVibrationData(req.body);
 		res.json(response);
 	}

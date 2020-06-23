@@ -84,7 +84,7 @@ function callbackOnGetData(data) {
 $(document).ready(function() {
 	let numInitialData = 10;
 	$.ajax({
-		url: '/vibrations?last='+numInitialData,
+		url: '/vibration?last='+numInitialData,
 		success: function(data) {
 			initDataForChart(data);
 			createChart();

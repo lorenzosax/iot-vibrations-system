@@ -24,15 +24,14 @@ const getLastXVibrationsData = async (numOfElToTake) => {
 };
 
 const saveVibrationData = async (vibrationData) => {
-	let response;
-	const savedVibrationData = await sensorDao
-		.saveMagnetometerData(vibrationData);
-	if (savedVibrationData.status !== utils.prepareKO().status) {
-		response = utils.prepareSuccessSentSensorData();
-	} else {
-		response = utils.prepareErrorSendingSensorData(savedVibrationData);
-	}
-	return response;
+	vibrationData.axes.forEach(async (axes) => {
+		let obj = {
+			location: vibrationData.location,
+			axes: axes,
+		};
+		await sensorDao.saveMagnetometerData(obj);
+	});
+	return utils.prepareSuccessSentSensorData();
 };
 
 const save3axesVibrationData = async (location, x, y, z) => {
