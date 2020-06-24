@@ -2,20 +2,14 @@ import sensorDao from '../dao/sensor.dao';
 import utils from '../utils';
 import _ from 'underscore';
 
-const getAllVibrationsData = async () => {
-	let vibrationData = await sensorDao.findMagnetometerData();
-	return new Promise((resolve, reject) => {
-		resolve(vibrationData);
-	});
-};
-
-const getLastXVibrationsData = async (numOfElToTake) => {
+const getVibrationsData = async (limit, location) => {
+	let opts = {};
 	const sort = {createdAt: -1};
+	const lim = limit ? parseInt(limit) : null;
+	location ? opts.location = location : null;
 	return new Promise(async (resolve, reject) => {
 		try {
-			const limit = parseInt(numOfElToTake);
-			let vibrationData = await sensorDao
-				.findMagnetometerData({}, sort, limit);
+			let vibrationData = await sensorDao.findMagnetometerData(opts, sort, lim);
 			resolve(_.sortBy(vibrationData, 'createdAt'));
 		} catch (e) {
 			reject();
@@ -47,8 +41,7 @@ const save3axesVibrationData = async (location, x, y, z) => {
 };
 
 export default {
-	getAllVibrationsData,
-	getLastXVibrationsData,
+	getVibrationsData,
 	saveVibrationData,
 	save3axesVibrationData,
 };

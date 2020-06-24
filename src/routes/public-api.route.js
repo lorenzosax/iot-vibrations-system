@@ -73,12 +73,8 @@ routerPublic.get(consts.ENDPOINTS.RESEND_CONFIRM_EMAIL,
 // region IOT DATA
 routerPublic.get(consts.ENDPOINTS.VIBRATION_DATA,
 	async (req, res) => {
-		let response;
-		if (!isNaN(req.query.last)) {
-			response = await sensorService.getLastXVibrationsData(req.query.last);
-		} else {
-			response = await sensorService.getAllVibrationsData();
-		}
+		let response = await sensorService
+			.getVibrationsData(req.query.last, req.query.location);
 		res.json(response);
 	}
 );

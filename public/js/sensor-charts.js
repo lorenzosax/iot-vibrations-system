@@ -40,7 +40,7 @@ function initDataForChart(data) {
 	}
 }
 
-function createChart() {
+function createChart(chartName) {
 	let ctx = document.getElementById('canvas').getContext('2d');
 	myLineChart = Chart.Line(ctx, {
 		data: lineChartData,
@@ -50,7 +50,7 @@ function createChart() {
 			stacked: false,
 			title: {
 				display: true,
-				text: 'Vibration chart',
+				text: 'Vibrations measures of IoT node located in ' + chartName,
 				fontSize: 20,
 			},
 			scales: {
@@ -97,12 +97,13 @@ function callbackOnGetData(data) {
 }
 
 $(document).ready(function() {
-	let numInitialData = 200;
+	const numInitialData = 200;
+	const location = 'LabPoli';
 	$.ajax({
-		url: '/vibration?last='+numInitialData,
+		url: '/vibration?location=' + location + '&last=' + numInitialData,
 		success: function(data) {
 			initDataForChart(data);
-			createChart();
+			createChart(data && data[0] ? data[0].location : "");
 			openSocket(callbackOnGetData);
 		},
 	});
