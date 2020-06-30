@@ -7,7 +7,6 @@ import validations from './validations';
 import userService from '../service/user.service';
 import authService from '../service/auth.service';
 import sensorService from '../service/sensor.service';
-import logService from '../service/log.service';
 
 const routerPublic = Router();
 const appConfig = config.get('app');
@@ -80,25 +79,13 @@ routerPublic.get(consts.ENDPOINTS.VIBRATION_DATA,
 );
 
 routerPublic.post(consts.ENDPOINTS.VIBRATION_DATA,
-	// validate(validations.vibrationData, {}, {}),
+	validate(validations.vibrationData, {}, {}),
 	async (req, res) => {
 		const response = await sensorService.saveVibrationData(req.body);
 		res.json(response);
 	}
 );
 
-// TODO Only for test... BAD PRACTISE USE GET FOR STORE DATA!!!
-routerPublic.get(consts.ENDPOINTS.SAVE_VIBRATIONS,
-	async (req, res) => {
-		logService.saveLog(req);
-		const response = await sensorService.save3axesVibrationData(
-			req.query.location,
-			req.query.x,
-			req.query.y,
-			req.query.z);
-		res.json(response);
-	}
-);
 // endregion
 
 export default routerPublic;

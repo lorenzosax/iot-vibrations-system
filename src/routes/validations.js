@@ -31,7 +31,7 @@ const resendConfirmEmail = {
 const vibrationData = {
 	body: Joi.object({
 		location: Joi.string().required(),
-		axes: Joi.array().length(3).required(),
+		axes: Joi.array().has(Joi.array()),
 	}),
 };
 

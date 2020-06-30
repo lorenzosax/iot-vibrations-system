@@ -12,7 +12,6 @@ export default {
 		RESEND_CONFIRM_EMAIL: '/resend-confirm/:email',
 		// Public - IOT DATA
 		VIBRATION_DATA: '/vibration',
-		SAVE_VIBRATIONS: '/savevibrations',	// TODO Only for test! Bad way
 		// Private
 		CHECK_TOKEN: '/check-token',
 	},

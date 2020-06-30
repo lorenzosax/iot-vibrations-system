@@ -1,11 +1,11 @@
 import utils from '../utils';
 import LogModel from '../model/log.model';
 
-const saveLog = (logData) => {
+const saveHttpLog = (httpResponse) => {
 	let obj = {
-		headers: logData.headers,
-		body: logData.body,
-		query: logData.query,
+		headers: httpResponse.headers,
+		body: httpResponse.body,
+		query: httpResponse.query,
 	};
 	const log = new LogModel(obj);
 	return log.save()
@@ -14,5 +14,5 @@ const saveLog = (logData) => {
 };
 
 export default {
-	saveLog,
+	saveHttpLog,
 };
