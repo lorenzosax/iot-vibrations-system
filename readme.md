@@ -1,4 +1,4 @@
-# IoT Vibration system
+# IoT System to monitoring vibrations
 This repository contains source code of an IoT system developed for a Unisannio exam:
 - information integration layer program code: server exposing REST API, written in Node.js
 - physical layer program code: to be loaded on the microcontroller (NUCLEO-F401RE), written in C++
