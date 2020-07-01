@@ -1,13 +1,13 @@
-const PORT = process.env.PORT || 4000;
-const DB_USR = process.env.DB_USR || '';
-const DB_PWD = process.env.DB_PWD || '';
+const PORT = process.env.PORT || 80;
+const DB_USR = process.env.DB_USR;
+const DB_PWD = process.env.DB_PWD;
 const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY;
 const GMAIL_USR = process.env.GMAIL_USR;
 const GMAIL_PWD = process.env.GMAIL_PWD;
 
 module.exports = {
 	app: {
-		name: 'iot-sensors-data',
+		name: 'iot-data-collector',
 		version: '1.0.0',
 		port: PORT,
 		baseUrl: `https://misure2020.herokuapp.com`,

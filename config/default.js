@@ -1,23 +1,26 @@
 const PORT = process.env.PORT || 3000;
-const DB_USR = process.env.DB_USR || 'admin';
-const DB_PWD = process.env.DB_PWD || 'adminpwd';
+const DB_USR = process.env.DB_USR;
+const DB_PWD = process.env.DB_PWD;
+const JWT_SECRET_KEY = process.env.JWT_SECRET_KEY || '183kJjsnIOkaudhe1sxow221';
+const GMAIL_USR = process.env.GMAIL_USR;
+const GMAIL_PWD = process.env.GMAIL_PWD;
 
 module.exports = {
 	app: {
-		name: 'iot-sensors-data',
+		name: 'iot-data-collector',
 		version: '1.0.0',
 		port: PORT,
 		baseUrl: `http://localhost:${PORT}`,
 	},
 	authentication: {
-		secretKey: '183kJjsnIOkaudhe11POALL8sxow221',
+		secretKey: JWT_SECRET_KEY,
 		optionsSign: {
 			expiresIn: '24h',
 		},
 		salts: 10,
 		gmail: {
-			user: '',
-			password: '',
+			user: GMAIL_USR,
+			password: GMAIL_PWD,
 		},
 	},
 	randomStringOptions: {
