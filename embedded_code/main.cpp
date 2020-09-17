@@ -22,14 +22,14 @@
 #include <string>
 
 #if TARGET_UBLOX_EVK_ODIN_W2
-    #include "OdinWiFiInterface.h"
-    OdinWiFiInterface wifi;
+#include "OdinWiFiInterface.h"
+OdinWiFiInterface wifi;
 #else
-    #if !TARGET_FF_ARDUINO
-        #error [NOT_SUPPORTED] Only Arduino form factor devices are supported at this time
-    #endif
-    #include "ESP8266Interface.h"
-    ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
+#if !TARGET_FF_ARDUINO
+#error[NOT_SUPPORTED] Only Arduino form factor devices are supported at this time
+#endif
+#include "ESP8266Interface.h"
+ESP8266Interface wifi(MBED_CONF_APP_WIFI_TX, MBED_CONF_APP_WIFI_RX);
 #endif
 
 static XNucleoIKS01A2 *mems_expansion_board = XNucleoIKS01A2::instance(D14, D15, D4, D5);
@@ -38,34 +38,38 @@ static LSM6DSLSensor *acc_gyro = mems_expansion_board->acc_gyro;
 bool flag = false;
 Ticker t;
 
-void enableMeasure() {
-	flag = true;
+void enableMeasure()
+{
+    flag = true;
 }
 
-const char *sec2str(nsapi_security_t sec) {
-    switch (sec) {
-        case NSAPI_SECURITY_NONE:
-            return "None";
-        case NSAPI_SECURITY_WEP:
-            return "WEP";
-        case NSAPI_SECURITY_WPA:
-            return "WPA";
-        case NSAPI_SECURITY_WPA2:
-            return "WPA2";
-        case NSAPI_SECURITY_WPA_WPA2:
-            return "WPA/WPA2";
-        case NSAPI_SECURITY_UNKNOWN:
-        default:
-            return "Unknown";
+const char *sec2str(nsapi_security_t sec)
+{
+    switch (sec)
+    {
+    case NSAPI_SECURITY_NONE:
+        return "None";
+    case NSAPI_SECURITY_WEP:
+        return "WEP";
+    case NSAPI_SECURITY_WPA:
+        return "WPA";
+    case NSAPI_SECURITY_WPA2:
+        return "WPA2";
+    case NSAPI_SECURITY_WPA_WPA2:
+        return "WPA/WPA2";
+    case NSAPI_SECURITY_UNKNOWN:
+    default:
+        return "Unknown";
     }
 }
 
-void scan(WiFiInterface *wifi) {
+void scan(WiFiInterface *wifi)
+{
     WiFiAccessPoint *ap;
 
     printf("Scan:\r\n");
 
-    int count = wifi->scan(NULL,0);
+    int count = wifi->scan(NULL, 0);
 
     /* Limit number of network arbitrary to 15 */
     count = count < 15 ? count : 15;
@@ -93,10 +97,11 @@ void http_post_send_vibrations(NetworkInterface *net, int32_t axes[][3])
     socket.open(net);
     socket.connect("misure2020.herokuapp.com", 80);
 
-    char *body = (char*) malloc(1000*sizeof(char));
+    char *body = (char *)malloc(1000 * sizeof(char));
     strcat(body, "{\"location\": \"LabPoli\",");
     strcat(body, " \"axes\": [");
-    for(int i = 0; i < 50; i++) {
+    for (int i = 0; i < 50; i++)
+    {
         string x = to_string(axes[i][0]);
         string y = to_string(axes[i][1]);
         string z = to_string(axes[i][2]);
@@ -107,33 +112,36 @@ void http_post_send_vibrations(NetworkInterface *net, int32_t axes[][3])
         strcat(body, ",");
         strcat(body, z.c_str());
         strcat(body, "]");
-        if(i!=49) strcat(body, ",");
+        if (i != 49)
+            strcat(body, ",");
     }
     strcat(body, "]}");
-    body = (char *) realloc(body, (strlen(body)+1)*sizeof(char));
+    body = (char *)realloc(body, (strlen(body) + 1) * sizeof(char));
 
     char sbuffer[1200] = "POST /vibration HTTP/1.1\r\nHost: misure2020.herokuapp.com\r\nContent-Type: application/json\r\nContent-Length: ";
 
-    strcat(sbuffer, to_string(strlen(body)+1).c_str());
+    strcat(sbuffer, to_string(strlen(body) + 1).c_str());
     strcat(sbuffer, "\r\n\r\n");
     strcat(sbuffer, body);
     strcat(sbuffer, "\r\n\r\n");
 
     // Send a simple http request
     int scount = socket.send(sbuffer, sizeof sbuffer);
-    printf("sent %d [%.*s]\r\n", scount, strstr(sbuffer, "\r\n")-sbuffer, sbuffer);
+    printf("sent %d [%.*s]\r\n", scount, strstr(sbuffer, "\r\n") - sbuffer, sbuffer);
 
     socket.close();
 }
 
-void banner() {
-	printf("\r\n\r\n");
-	printf("###################################\r\n");
-	printf("##  (NEW) IoT Node: Vibration    ##\r\n");
-	printf("###################################\r\n\r\n");
+void banner()
+{
+    printf("\r\n\r\n");
+    printf("###################################\r\n");
+    printf("##  (NEW) IoT Node: Vibration    ##\r\n");
+    printf("###################################\r\n\r\n");
 }
 
-int main() {
+int main()
+{
     banner();
 
     int32_t group[50][3];
@@ -145,12 +153,16 @@ int main() {
 
     printf("\r\nConnecting to LabPoli...\r\n");
 
-    while (!success) {
+    while (!success)
+    {
         int ret = wifi.connect(MBED_CONF_APP_WIFI_SSID, MBED_CONF_APP_WIFI_PASSWORD, NSAPI_SECURITY_NONE);
-        if (ret != 0) {
+        if (ret != 0)
+        {
             printf("\r\nConnection error, retrying...\r\n");
             thread_sleep_for(1500);
-        } else {
+        }
+        else
+        {
             printf("Connected!\r\n\r\n");
             success = true;
         }
@@ -173,13 +185,16 @@ int main() {
     printf("START:\r\n\r\n");
 
     int i = 0;
-    while(1) {
-        if (flag) {
+    while (1)
+    {
+        if (flag)
+        {
             acc_gyro->get_x_axes(group[i]);
             //printf("LSM6DSL [acc/mg]:  %d, %d, %d [%d]\r\n", group[i][0], group[i][1], group[i][2], i);
             i++;
 
-            if(i >= 50) {
+            if (i >= 50)
+            {
                 http_post_send_vibrations(&wifi, group);
                 i = 0;
             }
